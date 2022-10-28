@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+      .navbar {
+        margin-bottom: 50px;
+        border-radius: 0;
+      }
+      
+      /* Remove the jumbotron's default bottom margin */ 
+       .jumbotron {
+        margin-bottom: 0;
+      }
+      
+      /* Add a gray background color and some padding to the footer */
+      footer {
+        background-color: #f2f2f2;
+        padding: 25px;
+      }
+    </style>
+  </head>
+  <body>
+  
+ 
+  
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>                        
+          </button>
+          <a class="navbar-brand" href="#" style="color:orange">QRL Staking Calculator</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Calculator</a></li>
+            <li><a href="#" disabled>Info</a></li>
+            <li><a href="#" disabled>Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  
+
+
+<div class="container">
+    <div class="tit">
+  <b><center>This is a QRL Staking Reward Calculator after PoS is available.</b>
+  </div><br></center>
+  <div class="calc">
+  <form>
+    <div class="form-group">
+      <label for="amount" style="color:white">Amount of QRL to Stake:</label>
+      <input type="number" class="form-control" id="amount" min="10000" value="10000"placeholder="E.g: 10000" onchange="this.value=Math.max(this.value,100)">
+    </div>
+    <div class="form-group">
+      <label for="months" style="color:white">Number of Months to Stake:</label>
+      <input type="number" class="form-control" id="months" value="12" min="1" placeholder="E.g: 12" onchange="this.value=Math.max(this.value,1)">
+    </div>
+        <div class="form-group">
+      <label for="validatorFee" style="color:white">Validator fee %: <small style="color:red">if delegation to a validator will be a thing and Validators can charge a fee</small></label>
+      <input type="number" class="form-control" id="validatorFee" value="Disabled" placeholder="Disabled" onchange="this.value=Math.min(this.value,100)" disabled>
+    </div>
+    <button type="button" class="btn btn-default" onclick="calculateReward()">Calculate My QRL Reward</button>
+  </form>
+  </div>
+</div>
+
+<div class="modal fade" id="rewardModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">QRL Staking Reward (<b style="color:red">TEST</b>)</h4>
+        </div>
+        <div class="modal-body">
+          <p id="reward" onchange="this.value=Math.max(this.value,0)"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <br>
+  <div class="box" style="border-radius: 50px;">
+  <div class="text">
+      <center>
+          
+    <span><b style ="color:white">Some Validators you can Delegate to</b></span>
+    <span class="dot" style="background-color: #00ff00;"></span>
+    </center>
+  </div>
+</div>
+  <br>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-4"> 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Validator #1<small style ="color:orange"> [Recommended]</small></h3>
+        </div>
+        <div class="panel-body">
+          <p>Your validator info here. $40 in QRL, Duration 12 months.</p><a href="https://theqrl.org" class="btn1 btn-primary">Visit</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Validator #2</h3>
+        </div>
+        <div class="panel-body">
+          <p>Your validator info here. FREE. Duration Uncertain.</p><a href="https://theqrl.org" class="btn1 btn-primary">Visit</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4"> 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Validator #3</h3>
+        </div>
+        <div class="panel-body">
+          <p>Your validator info here. FREE. Duration Uncertain.</p><a href="www.theqrl.org" class="btn1 btn-primary">Visit</a>
+        </div>
+      </div>
+    </div>
+
+
+<script>
+function calculateReward() {
+  var amount = document.getElementById("amount").value;
+  var months = document.getElementById("months").value;
+  var dailyreward = 0.01;
+  var reward = amount * months * dailyreward;
+  var validatorFee = document.getElementById("validatorFee").value;
+  var valfee = validatorFee / 100;
+  var aftervalfee = reward - (reward * valfee);
+  
+  if(validatorFee == 0) {
+  document.getElementById("reward").innerHTML = "If you stake " + amount + " <b>QRL</b> for " + months + " months, you will receive " + reward + " <b>QRL</b> as a reward (" + dailyreward + "<b> QRL</b> daily) <small>(DEMO UNTIL POS)</small>.";
+  }
+  else {
+  document.getElementById("reward").innerHTML = "If you stake " + amount + " <b>QRL</b> for " + months + " months, you will receive " + aftervalfee + "<b> QRL</b> as a reward (" +dailyreward+ " <b>QRL</b> daily) [Validator fee: "+validatorFee+"%]"+" <small>(DEMO UNTIL POS)</small>.";
+  }
+  $("#rewardModal").modal();
+}
+</script>
+<style>
+body {
+  background-color: black;
+  margin: 5px;
+  margin-top: 15px;
+  padding: 0;
+  font-size: 120%;
+  vertical-align: baseline;
+  line-height: 2;
+}
+
+
+.btn {
+  background-color: white;
+  border: 2px solid white;
+}
+
+
+.form-control {
+  text-align: center;
+}
+.tit {
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+  background-color: white;
+  padding: 3px;
+}
+
+.form {
+  border: 1px solid #e5e5e5;
+  border-radius: 0px;
+  background-color: #fff;
+  padding: 0px;
+}
+@media only screen and (max-width:480px){
+
+.
+
+}
+.btn1 {
+  background-color: orange;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  padding: 0.1px 30px;
+  text-align: ;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.box {
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+.text {
+  font-size: 16px;
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+.footer-text {
+  animation: glowing 1500ms infinite;
+  color: white;
+  text-decoration: none;
+  }
+  @keyframes glowing {
+  
+  100% { text-shadow: 0 0 20px #fff, 0 0 30px }
+  }
+.navbar-inverse {
+    border-radius:20px;
+    border: 2px solid white;
+  }
+  
+.calc{
+    background-color: ;
+    border: 5px solid white;
+    border-radius: 20px;
+    padding-bottom: 12px;
+    padding-top: 12px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.col-sm-4h {
+  display: ;
+  opacity: 100;
+}
+
+.modal-dialogh{
+    border: 2px  orange;
+    border-radius: 4px;
+    background-color: orange;
+    padding: 1000px;
+}
+
+opacity{
+    opacity: 0px;
+}
+</style>
+
+
+
+<center><a href="theqrl.org" class="footer-text">Powered by Quantum Resistant Ledger</a></center>
+<br>
+
+  </body>
+</html>
